@@ -162,12 +162,12 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh api markdown
+        gh api markdown \
           -H "Accept: text/html" \
           -f mode=gfm \
           -f text="$(cat results/check.vscode.md)" \
           > results/check-report.html
-        gh api markdown
+        gh api markdown \
           -H "Accept: text/html" \
           -f mode=gfm \
           -f text="$(cat results/test.vscode.md)" \
