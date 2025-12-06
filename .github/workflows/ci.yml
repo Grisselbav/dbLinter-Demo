@@ -10,6 +10,7 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    environment: dblinter
     permissions:
       contents: read
       pages: write
