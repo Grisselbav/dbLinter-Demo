@@ -127,6 +127,12 @@ jobs:
       with:
         sarif_file: results/check.sarif.sarif
 
+    - name: Show dbLinter annotations
+      run: |
+        if [ -f "results/check.github.txt" ]; then
+          cat results/check.github.txt
+        fi
+
     - name: Run SQL-based tests
       run: |
         echo "Running dbLinter tests..."
