@@ -161,6 +161,32 @@ jobs:
         reporter: java-junit
         fail-on-error: false
 
+    - name: Create Summary Report
+      if: always()
+      run: |
+        echo "# dbLinter Results Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        # Check results
+        if [ -f "results/check.vscode.md" ]; then
+          echo "## Code Quality Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat results/check.vscode.md >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        # Test results
+        if [ -f "results/test.vscode.md" ]; then
+          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat results/test.vscode.md >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        echo "---" >> $GITHUB_STEP_SUMMARY
+        echo "[View detailed results in artifacts](../actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+        echo "[View results on GitHub Pages](https://grisselbav.github.io/dbLinter-Demo/)" >> $GITHUB_STEP_SUMMARY
+
     - name: Upload Results
       uses: actions/upload-artifact@v4
       if: always()
