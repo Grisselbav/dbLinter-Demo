@@ -96,3 +96,25 @@ jobs:
           install.log
           *.log
         retention-days: 90
+
+    - name: Prepare directory to be deployed to GitHub Pages
+      if: always()
+      run: |
+        # Create a temporary directory for only the log files
+        mkdir -p temp_logs
+        if [ -f "install.log" ]; then
+          cp install.log temp_logs/
+          echo "install.log copied to temp_logs/"
+        else
+          echo "install.log not found, creating empty file"
+          echo "install.log was not generated" > temp_logs/install.log
+        fi
+
+    - name: Upload results to GitHub Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: temp_logs
+        destination_dir: logs/${{ github.run_number }}
+        keep_files: true
