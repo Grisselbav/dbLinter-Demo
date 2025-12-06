@@ -129,6 +129,7 @@ jobs:
 
     - name: Show dbLinter annotations
       run: |
+        # GitHub limits the number of annotations to 10 per serverity level (error, warning, notice).
         if [ -f "results/check.github.txt" ]; then
           cat results/check.github.txt
         fi
