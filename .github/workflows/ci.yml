@@ -46,21 +46,11 @@ jobs:
 
     - name: Download and install SQLcl
       run: |
-        # Get SQLcl
         echo "Downloading SQLcl..."
         wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-25.2.0.184.2054.zip
-
-        # Extract SQLcl
         unzip -q sqlcl.zip
-
-        # Make sql executable
         chmod +x sqlcl/bin/sql
-
-        # Add to PATH
         echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
-
-        # Verify installation
-        echo "SQLcl installed successfully"
 
     - name: Run database installation script
       run: |
@@ -70,15 +60,8 @@ jobs:
     - name: Verify installation
       run: |
         echo "Verifying installation by looking for errors in install.log..."
-
         if [ -f "install.log" ]; then
-          echo "Contents of install.log:"
-          cat install.log
-          echo ""
-
-          # Check for ORA- errors
           ora_errors=$(grep -c "ORA-" install.log || true)
-
           if [ $ora_errors -gt 0 ]; then
             echo "❌ Installation failed: Found $ora_errors errors in install.log:"
             grep "ORA-" install.log
@@ -91,20 +74,9 @@ jobs:
           exit 1
         fi
 
-    - name: Upload installation logs
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: installation-logs
-        path: |
-          install.log
-          *.log
-        retention-days: 90
-
     - name: Prepare directory to be deployed to GitHub Pages
       if: always()
       run: |
-        # Create a temporary directory for only the log files
         mkdir -p results
         if [ -f "install.log" ]; then
           cp install.log results/
@@ -113,6 +85,61 @@ jobs:
           echo "install.log not found, creating empty file"
           echo "install.log was not generated" > results/install.log
         fi
+
+    - name: Download and install dbLinter CLI
+      run: |
+        echo "Downloading dbLinter CLI..."
+        wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/cli-v1.0.0/dblinter-1.0.0.zip
+        unzip dblinter.zip
+        mv dblinter-* dblinter
+        chmod +x dblinter/dblinter
+        echo "$(pwd)/dblinter" >> $GITHUB_PATH
+
+    - name: Run checks
+      run: |
+        echo "Running dbLinter checks..."
+        dblinter \
+          --workspace=examples
+          --tenantName=${{ secrets.TENANT }} \
+          --userName=${{ secrets.USERNAME }} \
+          --accessToken=${{ secrets.TOKEN }} \
+          --configName=dbLinter-Demo \
+          --connJdbcUrl="jdbc:oracle:thin:@localhost:1521/FREE" \
+          --connUserName="dbl_read" \
+          --connPassword="dbl_read" \
+          --logLevel=trace \
+          --logFile=results/check.log \
+          --logFormat=ext3 \
+          check \
+          --outputFormats=vscode,sonarqube,sarif,checkstyle,github,gitlab \
+          --outputName=results/check
+
+    - name: Run SQL-based tests
+      run: |
+        echo "Running dbLinter tests..."
+        dblinter \
+          --tenantName=${{ secrets.TENANT }} \
+          --userName=${{ secrets.USERNAME }} \
+          --accessToken=${{ secrets.TOKEN }} \
+          --configName=dbLinter-Demo \
+          --connJdbcUrl="jdbc:oracle:thin:@localhost:1521/FREE" \
+          --connUserName="dbl_read" \
+          --connPassword="dbl_read" \
+          --logLevel=trace \
+          --logFile=results/test.log \
+          --logFormat=ext3 \
+          test \
+          --outputFormats=vscode,junit \
+          --outputName=results/test
+
+    - name: Upload Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: results
+        path: |
+          results/*.*
+        retention-days: 30
 
     - name: Setup GitHub Pages
       uses: actions/configure-pages@v4
