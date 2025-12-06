@@ -19,7 +19,8 @@ hs_err_pid*
 
 # Eclipse / Visual Studio Code
 .project
-.vscode
+.vscode/*
+!.vscode/settings.json
 .classpath
 .antlr
 **/.settings
