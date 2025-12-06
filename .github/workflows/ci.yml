@@ -20,6 +20,8 @@ jobs:
       pages: write
       id-token: write
       security-events: write
+      checks: write
+      pull-requests: write
 
     services:
       oracle:
