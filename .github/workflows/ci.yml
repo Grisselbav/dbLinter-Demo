@@ -189,30 +189,112 @@ jobs:
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>${title}</title>
             <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${favicon}</text></svg>">
-            <link rel="stylesheet" href="https://github.githubassets.com/assets/primer-primitives.css">
-            <link rel="stylesheet" href="https://github.githubassets.com/assets/primer.css">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-light.css">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-dark.css">
             <style>
+              :root {
+                color-scheme: light dark;
+              }
+
               body {
                 font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
                 line-height: 1.5;
-                color: var(--color-fg-default);
-                background-color: var(--color-canvas-default);
                 margin: 0;
-                padding: 32px;
+                padding: 0;
+                background-color: #ffffff;
+                color: #1f2328;
               }
-              .container { max-width: 1280px; margin: 0 auto; }
+
+              @media (prefers-color-scheme: dark) {
+                body {
+                  background-color: #0d1117;
+                  color: #e6edf3;
+                }
+              }
+
               .markdown-body {
-                color: var(--color-fg-default);
-                background-color: var(--color-canvas-default);
+                box-sizing: border-box;
+                min-width: 200px;
+                max-width: 980px;
+                margin: 0 auto;
+                padding: 45px;
+              }
+
+              @media (max-width: 767px) {
+                .markdown-body {
+                  padding: 15px;
+                }
+              }
+
+              /* Ensure GitHub markdown styles apply */
+              .markdown-body h1,
+              .markdown-body h2,
+              .markdown-body h3,
+              .markdown-body h4,
+              .markdown-body h5,
+              .markdown-body h6 {
+                margin-top: 24px;
+                margin-bottom: 16px;
+                font-weight: 600;
+                line-height: 1.25;
+              }
+
+              .markdown-body table {
+                border-spacing: 0;
+                border-collapse: collapse;
+                display: block;
+                width: max-content;
+                max-width: 100%;
+                overflow: auto;
+              }
+
+              .markdown-body table th,
+              .markdown-body table td {
+                padding: 6px 13px;
+                border: 1px solid #d0d7de;
+              }
+
+              @media (prefers-color-scheme: dark) {
+                .markdown-body table th,
+                .markdown-body table td {
+                  border-color: #30363d;
+                }
+              }
+
+              .markdown-body pre {
+                padding: 16px;
+                overflow: auto;
+                font-size: 85%;
+                line-height: 1.45;
+                background-color: #f6f8fa;
+                border-radius: 6px;
+              }
+
+              @media (prefers-color-scheme: dark) {
+                .markdown-body pre {
+                  background-color: #161b22;
+                }
+              }
+
+              .markdown-body code {
+                padding: 0.2em 0.4em;
+                margin: 0;
+                font-size: 85%;
+                background-color: rgba(175,184,193,0.2);
+                border-radius: 6px;
+              }
+
+              @media (prefers-color-scheme: dark) {
+                .markdown-body code {
+                  background-color: rgba(110,118,129,0.4);
+                }
               }
             </style>
           </head>
           <body>
-            <div class="container">
-              <div class="markdown-body">
-                ${html}
-              </div>
-            </div>
+            <article class="markdown-body">
+              ${html}
+            </article>
           </body>
           </html>`;
           }
@@ -234,147 +316,6 @@ jobs:
             fs.writeFileSync('results/test-report.html', testDoc);
             console.log('Created test-report.html using GitHub API');
           }
-
-    - name: Create GitHub Pages index
-      if: always()
-      run: |
-        cat > results/index.html << 'EOF'
-        <!DOCTYPE html>
-        <html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>dbLinter Demo - Results</title>
-          <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
-          <link rel="stylesheet" href="https://github.githubassets.com/assets/primer-primitives.css">
-          <link rel="stylesheet" href="https://github.githubassets.com/assets/primer.css">
-          <style>
-            body {
-              font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
-              margin: 0;
-              background-color: var(--color-canvas-default);
-              color: var(--color-fg-default);
-            }
-            .Header {
-              background-color: var(--color-canvas-subtle);
-              border-bottom: 1px solid var(--color-border-default);
-              padding: 16px 0;
-              margin-bottom: 32px;
-            }
-            .Header-item {
-              color: var(--color-fg-default);
-              font-weight: 600;
-              font-size: 24px;
-            }
-            .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
-            .Box {
-              background-color: var(--color-canvas-default);
-              border: 1px solid var(--color-border-default);
-              border-radius: 6px;
-            }
-            .Box-header {
-              background-color: var(--color-canvas-subtle);
-              padding: 16px;
-              border-bottom: 1px solid var(--color-border-default);
-              font-weight: 600;
-            }
-            .Box-body { padding: 16px; }
-            .d-flex { display: flex; }
-            .flex-wrap { flex-wrap: wrap; }
-            .gap-3 { gap: 16px; }
-            .mb-3 { margin-bottom: 16px !important; }
-            .btn {
-              display: inline-block;
-              padding: 5px 16px;
-              font-size: 14px;
-              font-weight: 500;
-              line-height: 20px;
-              border: 1px solid;
-              border-radius: 6px;
-              text-decoration: none;
-              margin-right: 8px;
-            }
-            .btn-primary {
-              color: var(--color-btn-primary-text);
-              background-color: var(--color-btn-primary-bg);
-              border-color: var(--color-btn-primary-border);
-            }
-            .btn-outline {
-              color: var(--color-btn-text);
-              background-color: var(--color-btn-bg);
-              border-color: var(--color-btn-border);
-            }
-          </style>
-        </head>
-        <body>
-          <div class="Header">
-            <div class="container">
-              <div class="Header-item">🔍 dbLinter Demo - Analysis Results</div>
-            </div>
-          </div>
-
-          <div class="container">
-            <div class="mb-3">
-              <p>Comprehensive code quality analysis and testing results for your database code.</p>
-            </div>
-
-            <div class="d-flex flex-wrap gap-3 mb-3">
-              <div class="Box" style="flex: 1; min-width: 300px;">
-                <div class="Box-header">📊 Code Quality Report</div>
-                <div class="Box-body">
-                  <p>Comprehensive analysis of code quality issues, best practices, and recommendations.</p>
-                  <div style="margin-top: 12px;">
-                    <a href="check-report.html" class="btn btn-primary">📄 View HTML Report</a>
-                    <a href="check.vscode.md" class="btn btn-outline">📝 Markdown Source</a>
-                  </div>
-                </div>
-              </div>
-
-              <div class="Box" style="flex: 1; min-width: 300px;">
-                <div class="Box-header">🧪 Test Results</div>
-                <div class="Box-body">
-                  <p>Results from SQL-based tests and validation checks.</p>
-                  <div style="margin-top: 12px;">
-                    <a href="test-report.html" class="btn btn-primary">📄 View HTML Report</a>
-                    <a href="test.vscode.md" class="btn btn-outline">📝 Markdown Source</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="Box">
-              <div class="Box-header">📁 Additional Reports & Logs</div>
-              <div class="Box-body">
-                <div class="d-flex flex-wrap gap-3">
-                  <div style="flex: 1; min-width: 250px;">
-                    <h4>🛡️ Security & Integration</h4>
-                    <ul>
-                      <li><a href="check.sarif.sarif">SARIF Report</a></li>
-                      <li><a href="check.sonarqube.xml">SonarQube XML</a></li>
-                      <li><a href="check.checkstyle.xml">Checkstyle XML</a></li>
-                      <li><a href="test.junit.xml">JUnit XML</a></li>
-                    </ul>
-                  </div>
-                  <div style="flex: 1; min-width: 250px;">
-                    <h4>📜 Execution Logs</h4>
-                    <ul>
-                      <li><a href="install.log">Installation Log</a></li>
-                      <li><a href="check.log">Check Execution Log</a></li>
-                      <li><a href="test.log">Test Execution Log</a></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--color-border-default); color: var(--color-fg-muted); font-size: 12px;">
-              Generated by <a href="https://dblinter.app/" style="color: var(--color-accent-fg);">dbLinter</a> •
-              <a href="https://github.com/Grisselbav/dbLinter-Demo" style="color: var(--color-accent-fg);">View Source Repository</a>
-            </div>
-          </div>
-        </body>
-        </html>
-        EOF
 
     - name: Publish Test Results (EnricoMi)
       uses: EnricoMi/publish-unit-test-result-action@v2
