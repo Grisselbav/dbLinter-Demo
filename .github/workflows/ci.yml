@@ -1,4 +1,4 @@
-name: CI - Database Setup and Tests
+name: CI - dbLinter checks and SQL-based tests
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  database-setup:
+  ci:
     runs-on: ubuntu-latest
 
     services:
