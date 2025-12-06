@@ -1,0 +1,7 @@
+{
+    "dblinter.connJdbcUrl": "jdbc:oracle:thin:@localhost:1542/FREEPDB1",
+    "dblinter.connUserName": "dbl_read",
+    "dblinter.connPassword": "dbl_read",
+    "dblinter.configName": "dbLinter-Demo",
+    "dblinter.logLevel": "Trace"
+}
