@@ -15,6 +15,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
+      security-events: write
 
     services:
       oracle:
