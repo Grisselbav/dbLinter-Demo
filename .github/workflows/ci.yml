@@ -127,6 +127,7 @@ jobs:
         sarif_file: results/check.sarif.sarif
         checkout_path: ${{ github.workspace }}
         wait-for-processing: false
+        skip-fingerprints: true
 
     - name: Run SQL-based tests
       run: |
