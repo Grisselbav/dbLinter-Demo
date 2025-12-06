@@ -95,4 +95,4 @@ jobs:
         path: |
           install.log
           *.log
-        retention-days: 365
+        retention-days: 90
