@@ -114,21 +114,17 @@ jobs:
           --outputFormats=vscode,sonarqube,sarif,checkstyle,github,gitlab \
           --outputName=results/check
 
-    - name: Show linting results
-      if: always()
+    - name: Show dbLinter annotations
       run: |
-        echo "dbLinter Check Results:"
         if [ -f "results/check.github.txt" ]; then
           cat results/check.github.txt
-        else
-          echo "No check.github.txt file found"
         fi
 
     - name: Upload SARIF to GitHub Security
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       if: always()
       with:
-        sarif_file: results/check.sarif.json
+        sarif_file: results/check.sarif.sarif
 
     - name: Run SQL-based tests
       run: |
@@ -156,15 +152,6 @@ jobs:
         path: results/test.junit.xml
         reporter: java-junit
         fail-on-error: false
-
-    - name: Add Test and Linter Summary to Workflow
-      if: always()
-      run: |
-        echo "## Test Results" >> $GITHUB_STEP_SUMMARY
-        echo "Test results are available in the [Test Results tab](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }})" >> $GITHUB_STEP_SUMMARY
-
-        echo "## Linting Results" >> $GITHUB_STEP_SUMMARY
-        echo "SARIF results uploaded to the [Security tab](${{ github.server_url }}/${{ github.repository }}/security/code-scanning)" >> $GITHUB_STEP_SUMMARY
 
     - name: Upload Results
       uses: actions/upload-artifact@v4
