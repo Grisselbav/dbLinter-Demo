@@ -1,0 +1,23 @@
+-- Core G-2135: Avoid assigning values to local variables that are not used by a subsequent statement.
+
+create or replace package body my_package is
+   procedure my_proc is
+      co_employee_id constant employees.employee_id%type := 1042;
+      co_hello       constant type_up.text               := 'Hello, ';
+      l_last_name    employees.last_name%type;
+      l_message      types_up.text;
+   begin
+      select emp.last_name
+        into l_last_name
+        from employees emp
+       where emp.employee_id = co_employee_id;
+
+      l_message := co_hello || l_last_name;
+   exception
+      when no_data_found then
+         null; -- handle_no_data_found;
+      when too_many_rows then
+         null; -- handle_too_many_rows;
+   end my_proc;
+end my_package;
+/

@@ -1,0 +1,21 @@
+-- Core G-3140: Try to use anchored records as targets for your cursors. 
+
+declare
+   cursor c_employees is
+      select employee_id,first_name,last_name
+        from employees;
+   l_employee_id employees.employee_id%type;
+   l_first_name  employees.first_name%type;
+   l_last_name   employees.last_name%type;
+begin
+   open c_employees;
+   fetch c_employees into l_employee_id,l_first_name,l_last_name;
+   <<process_employees>>
+   while c_employees%found
+   loop
+      -- do something with the data
+      fetch c_employees into l_employee_id,l_first_name,l_last_name;
+   end loop process_employees;
+   close c_employees;
+end;
+/

@@ -1,0 +1,25 @@
+-- Core G-8110: Never use SELECT COUNT(*) if you are only interested in the existence of a row.
+
+declare
+   l_count   pls_integer;
+   co_zero   constant simple_integer        := 0;
+   co_salary constant employees.salary%type := 5000;
+begin
+   select count(*)
+     into l_count
+     from employees
+    where salary < co_salary;
+   if l_count > co_zero then
+      <<emp_loop>>
+      for r_emp in (
+         select employee_id, salary
+           from employees
+      )
+      loop
+         if r_emp.salary < co_salary then
+            my_package.my_proc(in_employee_id => r_emp.employee_id);
+         end if;
+      end loop emp_loop;
+   end if;
+end;
+/
