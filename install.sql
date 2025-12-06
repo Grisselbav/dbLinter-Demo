@@ -222,7 +222,13 @@ prompt Core-G-1240...
 @examples/Core-G-1240
 
 prompt Core-G-1310...
+set termout off
+whenever sqlerror continue
+spool off
 @examples/Core-G-1310
+spool install.log append
+whenever sqlerror exit failure
+set termout on
 
 prompt Core-G-3160...
 set termout off
