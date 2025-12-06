@@ -58,37 +58,6 @@ jobs:
         # Verify installation
         echo "SQLcl installed successfully"
 
-    - name: Wait for Oracle AI Database to be ready
-      run: |
-        echo "Waiting for database to be ready using Docker healthcheck..."
-
-        # Initialise elapsed time in seconds, and set max waiting time to 30 seconds
-        elapsed=0
-        timeout=30
-
-        while [ $elapsed -lt $timeout ]; do
-          health_status=$(docker inspect oracle-db --format='{{.State.Health.Status}}')
-          echo "Current health status: $health_status (elapsed: ${elapsed}s)"
-
-          if [ "$health_status" = "healthy" ]; then
-            echo "Database is healthy and ready!"
-            break
-          elif [ "$health_status" = "unhealthy" ]; then
-            echo "Database healthcheck failed!"
-            docker logs oracle-db --tail 20
-            exit 1
-          fi
-
-          sleep 1
-          elapsed=$((elapsed + 1))
-        done
-
-        if [ $elapsed -ge $timeout ]; then
-          echo "Timeout waiting for database to become healthy"
-          docker logs oracle-db --tail 20
-          exit 1
-        fi
-
     - name: Run database installation script
       run: |
         echo "Executing install.sql script..."
