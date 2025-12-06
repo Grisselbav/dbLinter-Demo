@@ -115,12 +115,6 @@ jobs:
           --outputFormats=vscode,sonarqube,sarif,checkstyle,github,gitlab \
           --outputName=results/check
 
-    - name: Show dbLinter annotations
-      run: |
-        if [ -f "results/check.github.txt" ]; then
-          cat results/check.github.txt
-        fi
-
     - name: Upload SARIF to GitHub Security
       uses: github/codeql-action/upload-sarif@v4
       with:
