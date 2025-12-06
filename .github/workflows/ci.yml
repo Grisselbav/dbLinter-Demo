@@ -100,7 +100,6 @@ jobs:
       run: |
         echo "Running dbLinter checks..."
         dblinter \
-          --workspace=examples \
           --tenantName=${{ secrets.TENANT }} \
           --userName=${{ secrets.USERNAME }} \
           --accessToken=${{ secrets.TOKEN }} \
