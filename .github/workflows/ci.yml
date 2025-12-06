@@ -55,7 +55,7 @@ jobs:
     - name: Run database installation script
       run: |
         echo "Executing install.sql script..."
-        sql sys/oracle@localhost:1521/FREE as sysdba @install.sql
+        sql sys/oracle@localhost:1521/FREEPDB1 as sysdba @install.sql
 
     - name: Verify installation
       run: |
@@ -99,12 +99,12 @@ jobs:
       run: |
         echo "Running dbLinter checks..."
         dblinter \
-          --workspace=examples
+          --workspace=examples \
           --tenantName=${{ secrets.TENANT }} \
           --userName=${{ secrets.USERNAME }} \
           --accessToken=${{ secrets.TOKEN }} \
           --configName=dbLinter-Demo \
-          --connJdbcUrl="jdbc:oracle:thin:@localhost:1521/FREE" \
+          --connJdbcUrl="jdbc:oracle:thin:@localhost:1521/FREEPDB1" \
           --connUserName="dbl_read" \
           --connPassword="dbl_read" \
           --logLevel=trace \
@@ -122,7 +122,7 @@ jobs:
           --userName=${{ secrets.USERNAME }} \
           --accessToken=${{ secrets.TOKEN }} \
           --configName=dbLinter-Demo \
-          --connJdbcUrl="jdbc:oracle:thin:@localhost:1521/FREE" \
+          --connJdbcUrl="jdbc:oracle:thin:@localhost:1521/FREEPDB1" \
           --connUserName="dbl_read" \
           --connPassword="dbl_read" \
           --logLevel=trace \
