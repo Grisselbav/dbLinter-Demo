@@ -1,0 +1,129 @@
+name: CI - Database Setup and Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  database-setup:
+    runs-on: ubuntu-latest
+
+    services:
+      oracle:
+        image: gvenzl/oracle-free:23.26.0-slim-faststart
+        ports:
+          - 1521:1521
+        env:
+          ORACLE_PASSWORD: oracle
+        options: >-
+          --name oracle-db
+          --health-cmd healthcheck.sh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 25
+      uses: actions/setup-java@v4
+      with:
+        java-version: '25'
+        distribution: 'oracle'
+
+    - name: Verify Java installation
+      run: |
+        java -version
+        echo "JAVA_HOME: $JAVA_HOME"
+
+    - name: Download and install SQLcl
+      run: |
+        # Get the latest SQLcl version
+        echo "Downloading latest SQLcl..."
+        wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
+
+        # Extract SQLcl
+        unzip -q sqlcl.zip
+
+        # Make sql executable
+        chmod +x sqlcl/bin/sql
+
+        # Add to PATH
+        echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
+
+        # Verify installation
+        echo "SQLcl installed successfully"
+
+    - name: Wait for Oracle AI Database to be ready
+      run: |
+        echo "Waiting for database to be ready using Docker healthcheck..."
+
+        # Initialise elapsed time in seconds, and set max waiting time to 30 seconds
+        elapsed=0
+        timeout=30
+
+        while [ $elapsed -lt $timeout ]; do
+          health_status=$(docker inspect oracle-db --format='{{.State.Health.Status}}')
+          echo "Current health status: $health_status (elapsed: ${elapsed}s)"
+
+          if [ "$health_status" = "healthy" ]; then
+            echo "Database is healthy and ready!"
+            break
+          elif [ "$health_status" = "unhealthy" ]; then
+            echo "Database healthcheck failed!"
+            docker logs oracle-db --tail 20
+            exit 1
+          fi
+
+          sleep 1
+          elapsed=$((elapsed + 1))
+        done
+
+        if [ $elapsed -ge $timeout ]; then
+          echo "Timeout waiting for database to become healthy"
+          docker logs oracle-db --tail 20
+          exit 1
+        fi
+
+    - name: Run database installation script
+      run: |
+        echo "Executing install.sql script..."
+        sql sys/oracle@localhost:1521/FREE as sysdba @install.sql
+
+    - name: Verify installation
+      run: |
+        echo "Verifying installation by looking for errors in install.log..."
+
+        if [ -f "install.log" ]; then
+          echo "Contents of install.log:"
+          cat install.log
+          echo ""
+
+          # Check for ORA- errors
+          ora_errors=$(grep -c "ORA-" install.log || true)
+
+          if [ $ora_errors -gt 0 ]; then
+            echo "❌ Installation failed: Found $ora_errors errors in install.log:"
+            grep "ORA-" install.log
+            exit 1
+          else
+            echo "✅ Installation successful: No errors found in install.log"
+          fi
+        else
+          echo "❌ install.log file not found!"
+          exit 1
+        fi
+
+    - name: Upload installation logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: installation-logs
+        path: |
+          install.log
+          *.log
+        retention-days: 365
