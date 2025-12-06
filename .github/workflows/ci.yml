@@ -185,6 +185,51 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
         fi
 
+    - name: Add dbLinter check report as a check run
+      uses: actions/github-script@v7
+      if: always()
+      with:
+        script: |
+          const fs = require('fs');
+          const path = 'results/check.vscode.md';
+
+          let summary = '## dbLinter Code Quality Check\n\n';
+          let conclusion = 'success';
+
+          try {
+            if (fs.existsSync(path)) {
+              const content = fs.readFileSync(path, 'utf8');
+              summary += content;
+
+              // Determine conclusion based on content
+              if (content.includes('❌') || content.toLowerCase().includes('error')) {
+                conclusion = 'failure';
+              } else if (content.includes('⚠️') || content.toLowerCase().includes('warning')) {
+                conclusion = 'neutral';
+              }
+            } else {
+              summary += 'No check results available.';
+              conclusion = 'neutral';
+            }
+          } catch (error) {
+            summary += `Error reading check results: ${error.message}`;
+            conclusion = 'failure';
+          }
+
+          await github.rest.checks.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            name: 'dbLinter Code Quality',
+            head_sha: context.sha,
+            status: 'completed',
+            conclusion: conclusion,
+            output: {
+              title: 'dbLinter Code Quality Results',
+              summary: summary,
+              text: summary
+            }
+          });
+
     - name: Add dbLinter test report to summary page
       run: |
         if [ -f "results/test.vscode.md" ]; then
