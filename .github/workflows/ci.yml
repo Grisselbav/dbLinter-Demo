@@ -33,7 +33,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '21'
-        distribution: 'graalvm-community'
+        distribution: 'oracle'
 
     - name: Verify Java installation
       run: |
