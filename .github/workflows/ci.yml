@@ -46,9 +46,9 @@ jobs:
 
     - name: Download and install SQLcl
       run: |
-        # Get the latest SQLcl version
-        echo "Downloading latest SQLcl..."
-        wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
+        # Get SQLcl
+        echo "Downloading SQLcl..."
+        wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-25.2.0.184.2054.zip
 
         # Extract SQLcl
         unzip -q sqlcl.zip
