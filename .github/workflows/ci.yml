@@ -158,164 +158,20 @@ jobs:
           --outputFormats=vscode,junit \
           --outputName=results/test
 
-    - name: Convert Markdown to GitHub-native HTML
-      uses: actions/github-script@v7
-      if: always()
-      with:
-        script: |
-          const fs = require('fs');
-
-          // Function to render markdown using GitHub's API
-          async function renderMarkdown(content, filename) {
-            try {
-              const response = await github.rest.markdown.render({
-                text: content,
-                mode: 'gfm', // GitHub Flavored Markdown
-                context: `${context.repo.owner}/${context.repo.repo}`
-              });
-              return response.data;
-            } catch (error) {
-              console.log(`Error rendering ${filename}:`, error.message);
-              return `<h1>Error rendering ${filename}</h1><pre>${content}</pre>`;
-            }
-          }
-
-          // Function to wrap HTML in full document
-          function wrapInDocument(html, title, favicon = '🔍') {
-            return `<!DOCTYPE html>
-          <html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>${title}</title>
-            <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${favicon}</text></svg>">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-light.css">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-dark.css">
-            <style>
-              :root {
-                color-scheme: light dark;
-              }
-
-              body {
-                font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
-                line-height: 1.5;
-                margin: 0;
-                padding: 0;
-                background-color: #ffffff;
-                color: #1f2328;
-              }
-
-              @media (prefers-color-scheme: dark) {
-                body {
-                  background-color: #0d1117;
-                  color: #e6edf3;
-                }
-              }
-
-              .markdown-body {
-                box-sizing: border-box;
-                min-width: 200px;
-                max-width: 980px;
-                margin: 0 auto;
-                padding: 45px;
-              }
-
-              @media (max-width: 767px) {
-                .markdown-body {
-                  padding: 15px;
-                }
-              }
-
-              /* Ensure GitHub markdown styles apply */
-              .markdown-body h1,
-              .markdown-body h2,
-              .markdown-body h3,
-              .markdown-body h4,
-              .markdown-body h5,
-              .markdown-body h6 {
-                margin-top: 24px;
-                margin-bottom: 16px;
-                font-weight: 600;
-                line-height: 1.25;
-              }
-
-              .markdown-body table {
-                border-spacing: 0;
-                border-collapse: collapse;
-                display: block;
-                width: max-content;
-                max-width: 100%;
-                overflow: auto;
-              }
-
-              .markdown-body table th,
-              .markdown-body table td {
-                padding: 6px 13px;
-                border: 1px solid #d0d7de;
-              }
-
-              @media (prefers-color-scheme: dark) {
-                .markdown-body table th,
-                .markdown-body table td {
-                  border-color: #30363d;
-                }
-              }
-
-              .markdown-body pre {
-                padding: 16px;
-                overflow: auto;
-                font-size: 85%;
-                line-height: 1.45;
-                background-color: #f6f8fa;
-                border-radius: 6px;
-              }
-
-              @media (prefers-color-scheme: dark) {
-                .markdown-body pre {
-                  background-color: #161b22;
-                }
-              }
-
-              .markdown-body code {
-                padding: 0.2em 0.4em;
-                margin: 0;
-                font-size: 85%;
-                background-color: rgba(175,184,193,0.2);
-                border-radius: 6px;
-              }
-
-              @media (prefers-color-scheme: dark) {
-                .markdown-body code {
-                  background-color: rgba(110,118,129,0.4);
-                }
-              }
-            </style>
-          </head>
-          <body>
-            <article class="markdown-body">
-              ${html}
-            </article>
-          </body>
-          </html>`;
-          }
-
-          // Convert check report
-          if (fs.existsSync('results/check.vscode.md')) {
-            const checkContent = fs.readFileSync('results/check.vscode.md', 'utf8');
-            const checkHtml = await renderMarkdown(checkContent, 'check report');
-            const checkDoc = wrapInDocument(checkHtml, 'dbLinter Code Quality Report', '🔍');
-            fs.writeFileSync('results/check-report.html', checkDoc);
-            console.log('Created check-report.html using GitHub API');
-          }
-
-          // Convert test report
-          if (fs.existsSync('results/test.vscode.md')) {
-            const testContent = fs.readFileSync('results/test.vscode.md', 'utf8');
-            const testHtml = await renderMarkdown(testContent, 'test report');
-            const testDoc = wrapInDocument(testHtml, 'dbLinter Test Results', '🧪');
-            fs.writeFileSync('results/test-report.html', testDoc);
-            console.log('Created test-report.html using GitHub API');
-          }
+    - name: Render markdown with GitHub GFM API
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh api markdown
+          -H "Accept: text/html" \
+          -f mode=gfm \
+          -f text="$(cat results/check.vscode.md)" \
+          > results/check-report.html
+        gh api markdown
+          -H "Accept: text/html" \
+          -f mode=gfm \
+          -f text="$(cat results/test.vscode.md)" \
+          > results/test-report.html
 
     - name: Publish Test Results (EnricoMi)
       uses: EnricoMi/publish-unit-test-result-action@v2
