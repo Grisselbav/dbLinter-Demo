@@ -115,6 +115,13 @@ jobs:
           --outputFormats=vscode,sonarqube,sarif,checkstyle,github,gitlab \
           --outputName=results/check
 
+    - name: Rename partialFingerprints key in SARIF file
+      run: |
+        # CodeQL is always calculating its own hashes for primaryLocationLineHash.
+        # To avoid inconsistency warnings, we rename the key in our SARIF output.
+        echo "Renaming primaryLocationLineHash to dbLinterPrimaryLocationLineHash in SARIF file..."
+        sed -i 's/"primaryLocationLineHash":/"dbLinterPrimaryLocationLineHash":/g' results/check.sarif.sarif
+
     - name: Upload SARIF to GitHub Security
       uses: github/codeql-action/upload-sarif@v4
       with:
