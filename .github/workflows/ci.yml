@@ -158,6 +158,224 @@ jobs:
           --outputFormats=vscode,junit \
           --outputName=results/test
 
+    - name: Convert Markdown to GitHub-native HTML
+      uses: actions/github-script@v7
+      if: always()
+      with:
+        script: |
+          const fs = require('fs');
+
+          // Function to render markdown using GitHub's API
+          async function renderMarkdown(content, filename) {
+            try {
+              const response = await github.rest.markdown.render({
+                text: content,
+                mode: 'gfm', // GitHub Flavored Markdown
+                context: `${context.repo.owner}/${context.repo.repo}`
+              });
+              return response.data;
+            } catch (error) {
+              console.log(`Error rendering ${filename}:`, error.message);
+              return `<h1>Error rendering ${filename}</h1><pre>${content}</pre>`;
+            }
+          }
+
+          // Function to wrap HTML in full document
+          function wrapInDocument(html, title, favicon = '🔍') {
+            return `<!DOCTYPE html>
+          <html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${title}</title>
+            <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${favicon}</text></svg>">
+            <link rel="stylesheet" href="https://github.githubassets.com/assets/primer-primitives.css">
+            <link rel="stylesheet" href="https://github.githubassets.com/assets/primer.css">
+            <style>
+              body {
+                font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+                line-height: 1.5;
+                color: var(--color-fg-default);
+                background-color: var(--color-canvas-default);
+                margin: 0;
+                padding: 32px;
+              }
+              .container { max-width: 1280px; margin: 0 auto; }
+              .markdown-body {
+                color: var(--color-fg-default);
+                background-color: var(--color-canvas-default);
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="markdown-body">
+                ${html}
+              </div>
+            </div>
+          </body>
+          </html>`;
+          }
+
+          // Convert check report
+          if (fs.existsSync('results/check.vscode.md')) {
+            const checkContent = fs.readFileSync('results/check.vscode.md', 'utf8');
+            const checkHtml = await renderMarkdown(checkContent, 'check report');
+            const checkDoc = wrapInDocument(checkHtml, 'dbLinter Code Quality Report', '🔍');
+            fs.writeFileSync('results/check-report.html', checkDoc);
+            console.log('Created check-report.html using GitHub API');
+          }
+
+          // Convert test report
+          if (fs.existsSync('results/test.vscode.md')) {
+            const testContent = fs.readFileSync('results/test.vscode.md', 'utf8');
+            const testHtml = await renderMarkdown(testContent, 'test report');
+            const testDoc = wrapInDocument(testHtml, 'dbLinter Test Results', '🧪');
+            fs.writeFileSync('results/test-report.html', testDoc);
+            console.log('Created test-report.html using GitHub API');
+          }
+
+    - name: Create GitHub Pages index
+      if: always()
+      run: |
+        cat > results/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>dbLinter Demo - Results</title>
+          <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+          <link rel="stylesheet" href="https://github.githubassets.com/assets/primer-primitives.css">
+          <link rel="stylesheet" href="https://github.githubassets.com/assets/primer.css">
+          <style>
+            body {
+              font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+              margin: 0;
+              background-color: var(--color-canvas-default);
+              color: var(--color-fg-default);
+            }
+            .Header {
+              background-color: var(--color-canvas-subtle);
+              border-bottom: 1px solid var(--color-border-default);
+              padding: 16px 0;
+              margin-bottom: 32px;
+            }
+            .Header-item {
+              color: var(--color-fg-default);
+              font-weight: 600;
+              font-size: 24px;
+            }
+            .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+            .Box {
+              background-color: var(--color-canvas-default);
+              border: 1px solid var(--color-border-default);
+              border-radius: 6px;
+            }
+            .Box-header {
+              background-color: var(--color-canvas-subtle);
+              padding: 16px;
+              border-bottom: 1px solid var(--color-border-default);
+              font-weight: 600;
+            }
+            .Box-body { padding: 16px; }
+            .d-flex { display: flex; }
+            .flex-wrap { flex-wrap: wrap; }
+            .gap-3 { gap: 16px; }
+            .mb-3 { margin-bottom: 16px !important; }
+            .btn {
+              display: inline-block;
+              padding: 5px 16px;
+              font-size: 14px;
+              font-weight: 500;
+              line-height: 20px;
+              border: 1px solid;
+              border-radius: 6px;
+              text-decoration: none;
+              margin-right: 8px;
+            }
+            .btn-primary {
+              color: var(--color-btn-primary-text);
+              background-color: var(--color-btn-primary-bg);
+              border-color: var(--color-btn-primary-border);
+            }
+            .btn-outline {
+              color: var(--color-btn-text);
+              background-color: var(--color-btn-bg);
+              border-color: var(--color-btn-border);
+            }
+          </style>
+        </head>
+        <body>
+          <div class="Header">
+            <div class="container">
+              <div class="Header-item">🔍 dbLinter Demo - Analysis Results</div>
+            </div>
+          </div>
+
+          <div class="container">
+            <div class="mb-3">
+              <p>Comprehensive code quality analysis and testing results for your database code.</p>
+            </div>
+
+            <div class="d-flex flex-wrap gap-3 mb-3">
+              <div class="Box" style="flex: 1; min-width: 300px;">
+                <div class="Box-header">📊 Code Quality Report</div>
+                <div class="Box-body">
+                  <p>Comprehensive analysis of code quality issues, best practices, and recommendations.</p>
+                  <div style="margin-top: 12px;">
+                    <a href="check-report.html" class="btn btn-primary">📄 View HTML Report</a>
+                    <a href="check.vscode.md" class="btn btn-outline">📝 Markdown Source</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="Box" style="flex: 1; min-width: 300px;">
+                <div class="Box-header">🧪 Test Results</div>
+                <div class="Box-body">
+                  <p>Results from SQL-based tests and validation checks.</p>
+                  <div style="margin-top: 12px;">
+                    <a href="test-report.html" class="btn btn-primary">📄 View HTML Report</a>
+                    <a href="test.vscode.md" class="btn btn-outline">📝 Markdown Source</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="Box">
+              <div class="Box-header">📁 Additional Reports & Logs</div>
+              <div class="Box-body">
+                <div class="d-flex flex-wrap gap-3">
+                  <div style="flex: 1; min-width: 250px;">
+                    <h4>🛡️ Security & Integration</h4>
+                    <ul>
+                      <li><a href="check.sarif.sarif">SARIF Report</a></li>
+                      <li><a href="check.sonarqube.xml">SonarQube XML</a></li>
+                      <li><a href="check.checkstyle.xml">Checkstyle XML</a></li>
+                      <li><a href="test.junit.xml">JUnit XML</a></li>
+                    </ul>
+                  </div>
+                  <div style="flex: 1; min-width: 250px;">
+                    <h4>📜 Execution Logs</h4>
+                    <ul>
+                      <li><a href="install.log">Installation Log</a></li>
+                      <li><a href="check.log">Check Execution Log</a></li>
+                      <li><a href="test.log">Test Execution Log</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--color-border-default); color: var(--color-fg-muted); font-size: 12px;">
+              Generated by <a href="https://dblinter.app/" style="color: var(--color-accent-fg);">dbLinter</a> •
+              <a href="https://github.com/Grisselbav/dbLinter-Demo" style="color: var(--color-accent-fg);">View Source Repository</a>
+            </div>
+          </div>
+        </body>
+        </html>
+        EOF
+
     - name: Publish Test Results (EnricoMi)
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: (!cancelled())
@@ -184,51 +402,6 @@ jobs:
           cat results/check.vscode.md >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
         fi
-
-    - name: Add dbLinter check report as a check run
-      uses: actions/github-script@v7
-      if: always()
-      with:
-        script: |
-          const fs = require('fs');
-          const path = 'results/check.vscode.md';
-
-          let summary = '## dbLinter Code Quality Check\n\n';
-          let conclusion = 'success';
-
-          try {
-            if (fs.existsSync(path)) {
-              const content = fs.readFileSync(path, 'utf8');
-              summary += content;
-
-              // Determine conclusion based on content
-              if (content.includes('❌') || content.toLowerCase().includes('error')) {
-                conclusion = 'failure';
-              } else if (content.includes('⚠️') || content.toLowerCase().includes('warning')) {
-                conclusion = 'neutral';
-              }
-            } else {
-              summary += 'No check results available.';
-              conclusion = 'neutral';
-            }
-          } catch (error) {
-            summary += `Error reading check results: ${error.message}`;
-            conclusion = 'failure';
-          }
-
-          await github.rest.checks.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            name: 'dbLinter Code Quality',
-            head_sha: context.sha,
-            status: 'completed',
-            conclusion: conclusion,
-            output: {
-              title: 'dbLinter Code Quality Results',
-              summary: summary,
-              text: summary
-            }
-          });
 
     - name: Add dbLinter test report to summary page
       run: |
