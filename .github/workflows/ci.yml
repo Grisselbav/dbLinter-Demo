@@ -2,13 +2,15 @@ name: CI - dbLinter checks and SQL-based tests
 
 on:
   push:
-    branches: [ ** ]
+    branches:
+      - '**'
     paths-ignore:
       - 'README.md'
       - 'images/**'
       - '.gitignore'
   pull_request:
-    branches: [ ** ]
+    branches:
+      - '**'
     paths-ignore:
       - 'README.md'
       - 'images/**'
