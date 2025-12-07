@@ -175,6 +175,9 @@ jobs:
             -F text=@- \
             > "${output_html}.body"
 
+          # Add user-content- prefix to internal links
+          sed -i 's/href="#\([^"]*\)"/href="#user-content-\1"/g' "${output_html}.body"
+
           # Wrap with GitHub markdown styling
           cat > "$output_html" << 'EOF'
         <!DOCTYPE html>
