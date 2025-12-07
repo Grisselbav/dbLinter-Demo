@@ -178,6 +178,9 @@ jobs:
           # Add user-content- prefix to internal links
           sed -i 's/href="#\([^"]*\)"/href="#user-content-\1"/g' "${output_html}.body"
 
+          # Convert href anchors with user-content- prefix to lowercase
+          sed -i 's/href="#user-content-\([^"]*\)"/\L&/g' "${output_html}.body"
+
           # Wrap with GitHub markdown styling
           cat > "$output_html" << 'EOF'
         <!DOCTYPE html>
