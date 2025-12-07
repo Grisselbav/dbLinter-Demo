@@ -136,10 +136,7 @@ jobs:
 
     - name: Show dbLinter annotations
       run: |
-        # GitHub limits the number of annotations to 10 per serverity level (error, warning, notice).
-        if [ -f "results/check.github.txt" ]; then
-          cat results/check.github.txt
-        fi
+        cat results/check.github.txt
 
     - name: Run SQL-based tests
       run: |
@@ -234,21 +231,17 @@ jobs:
 
     - name: Add dbLinter check report to summary page
       run: |
-        if [ -f "results/check.vscode.md" ]; then
-          echo "<a name=\"dblinter-check-report\"></a>" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          cat results/check.vscode.md >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-        fi
+        echo "<a name=\"dblinter-check-report\"></a>" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        cat results/check.vscode.md >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
 
     - name: Add dbLinter test report to summary page
       run: |
-        if [ -f "results/test.vscode.md" ]; then
-          echo "<a name=\"dblinter-test-report\"></a>" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          cat results/test.vscode.md >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-        fi
+        echo "<a name=\"dblinter-test-report\"></a>" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        cat results/test.vscode.md >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
 
     - name: Upload Results
       uses: actions/upload-artifact@v4
