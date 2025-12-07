@@ -162,18 +162,50 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        cat results/check.vscode.md | gh api markdown \
-          --method POST \
-          -H "Accept: text/html" \
-          -F mode=gfm \
-          -F text=@- \
-          > results/check-report.html
-        cat results/test.vscode.md | gh api markdown \
-          --method POST \
-          -H "Accept: text/html" \
-          -F mode=gfm \
-          -F text=@- \
-          > results/test-report.html
+        render_markdown() {
+          local input_md=$1
+          local output_html=$2
+          local title=$3
+
+          # Render markdown to HTML
+          cat "$input_md" | gh api markdown \
+            --method POST \
+            -H "Accept: text/html" \
+            -F mode=gfm \
+            -F text=@- \
+            > "${output_html}.body"
+
+          # Wrap with GitHub markdown styling
+          cat > "$output_html" << 'EOF'
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+        EOF
+          echo "  <title>$title</title>" >> "$output_html"
+          cat >> "$output_html" << 'EOF'
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown.min.css">
+          <style>
+            .markdown-body { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 0 auto; padding: 45px; }
+            @media (max-width: 767px) { .markdown-body { padding: 15px; } }
+          </style>
+        </head>
+        <body>
+          <article class="markdown-body">
+        EOF
+          cat "${output_html}.body" >> "$output_html"
+          cat >> "$output_html" << 'EOF'
+          </article>
+        </body>
+        </html>
+        EOF
+          rm "${output_html}.body"
+        }
+
+        # Render both reports
+        render_markdown "results/check.vscode.md" "results/check-report.html" "dbLinter Check Report"
+        render_markdown "results/test.vscode.md" "results/test-report.html" "dbLinter Test Report"
 
     - name: Publish Test Results (EnricoMi)
       uses: EnricoMi/publish-unit-test-result-action@v2
