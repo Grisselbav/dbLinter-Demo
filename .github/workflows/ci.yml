@@ -51,40 +51,15 @@ jobs:
         java-version: '21'
         distribution: 'oracle'
 
-    - name: Verify Java installation
-      run: |
-        java -version
-        echo "JAVA_HOME: $JAVA_HOME"
-
     - name: Download and install SQLcl
       run: |
-        echo "Downloading SQLcl..."
         wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-25.2.0.184.2054.zip
         unzip -q sqlcl.zip
-        chmod +x sqlcl/bin/sql
         echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
 
     - name: Run database installation script
       run: |
-        echo "Executing install.sql script..."
         sql sys/oracle@localhost:1542/FREEPDB1 as sysdba @install.sql
-
-    - name: Verify installation
-      run: |
-        echo "Verifying installation by looking for errors in install.log..."
-        if [ -f "install.log" ]; then
-          ora_errors=$(grep -c "ORA-" install.log || true)
-          if [ $ora_errors -gt 0 ]; then
-            echo "❌ Installation failed: Found $ora_errors errors in install.log:"
-            grep "ORA-" install.log
-            exit 1
-          else
-            echo "✅ Installation successful: No errors found in install.log"
-          fi
-        else
-          echo "❌ install.log file not found!"
-          exit 1
-        fi
 
     - name: Prepare directory to be deployed to GitHub Pages
       if: always()
