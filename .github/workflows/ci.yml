@@ -78,7 +78,6 @@ jobs:
         wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/cli-v1.0.0/dblinter-1.0.0.zip
         unzip dblinter.zip
         mv dblinter-* dblinter
-        chmod +x dblinter/dblinter
         echo "$(pwd)/dblinter" >> $GITHUB_PATH
 
     - name: Run checks
@@ -152,7 +151,7 @@ jobs:
           # Add user-content- prefix to internal links
           sed -i 's/href="#\([^"]*\)"/href="#user-content-\1"/g' "${output_html}.body"
 
-          # Convert href anchors with user-content- prefix to lowercase
+          # Convert internal links with user-content- prefix to lowercase
           sed -i 's/href="#user-content-\([^"]*\)"/\L&/g' "${output_html}.body"
 
           # Wrap with GitHub markdown styling
