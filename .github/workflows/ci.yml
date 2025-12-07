@@ -77,7 +77,7 @@ jobs:
 
     - name: Download and install dbLinter CLI
       run: |
-        wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/cli-v1.0.0/dblinter-1.0.0.zip
+        wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/cli-v1.0.1/dblinter-1.0.1.zip
         unzip dblinter.zip
         mv dblinter-* dblinter
         echo "$(pwd)/dblinter" >> $GITHUB_PATH
