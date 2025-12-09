@@ -8,6 +8,7 @@ on:
       - 'README.md'
       - 'images/**'
       - '.gitignore'
+      - 'vscode/**'
   pull_request:
     branches:
       - '**'
@@ -15,6 +16,7 @@ on:
       - 'README.md'
       - 'images/**'
       - '.gitignore'
+      - 'vscode/**'
   workflow_dispatch:
 
 jobs:
