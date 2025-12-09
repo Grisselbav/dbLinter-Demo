@@ -3,5 +3,6 @@
     "dblinter.connUserName": "dbl_read",
     "dblinter.connPassword": "dbl_read",
     "dblinter.configName": "dbLinter-Demo",
-    "dblinter.logLevel": "Trace"
+    "dblinter.logLevel": "Trace",
+    "sarif-viewer.connectToGithubCodeScanning": "on"
 }
