@@ -4,5 +4,5 @@
     "dblinter.connPassword": "dbl_read",
     "dblinter.configName": "dbLinter-Demo",
     "dblinter.logLevel": "Trace",
-    "sarif-viewer.connectToGithubCodeScanning": "on"
+    "sarif-viewer.connectToGithubCodeScanning": "off"
 }
