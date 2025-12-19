@@ -79,7 +79,7 @@ jobs:
 
     - name: Download and install dbLinter CLI
       run: |
-        wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/cli-v1.0.1/dblinter-1.0.1.zip
+        wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/cli-v1.1.0/dblinter-1.1.0.zip
         unzip dblinter.zip
         mv dblinter-* dblinter
         echo "$(pwd)/dblinter" >> $GITHUB_PATH
@@ -88,9 +88,9 @@ jobs:
       run: |
         echo "Running dbLinter checks..."
         dblinter \
-          --tenantName=${{ secrets.TENANT }} \
-          --userName=${{ secrets.USERNAME }} \
-          --accessToken=${{ secrets.TOKEN }} \
+          --tenantName=${{ secrets.DBLINTER_TENANT_NAME }} \
+          --userName=${{ secrets.DBLINTER_USER_NAME }} \
+          --accessToken=${{ secrets.DBLINTER_ACCESS_TOKEN }} \
           --configName=dbLinter-Demo \
           --connJdbcUrl="jdbc:oracle:thin:@localhost:1542/FREEPDB1" \
           --connUserName="dbl_read" \
@@ -121,9 +121,9 @@ jobs:
       run: |
         echo "Running dbLinter tests..."
         dblinter \
-          --tenantName=${{ secrets.TENANT }} \
-          --userName=${{ secrets.USERNAME }} \
-          --accessToken=${{ secrets.TOKEN }} \
+          --tenantName=${{ secrets.DBLINTER_TENANT_NAME }} \
+          --userName=${{ secrets.DBLINTER_USER_NAME }} \
+          --accessToken=${{ secrets.DBLINTER_ACCESS_TOKEN }} \
           --configName=dbLinter-Demo \
           --connJdbcUrl="jdbc:oracle:thin:@localhost:1542/FREEPDB1" \
           --connUserName="dbl_read" \
