@@ -39,11 +39,17 @@ prompt =========================================================================
 prompt Users
 prompt ================================================================================================================
 
+prompt drop user dbl_owner...
+drop user if exists dbl_owner cascade;
+
 prompt create user dbl_owner...
 create user if not exists dbl_owner
    no authentication
    default tablespace users
    quota 1g on users;
+
+prompt drop user dbl_backend...
+drop user if exists dbl_backend cascade;
 
 prompt create user dbl_backend...
 create user if not exists dbl_backend
