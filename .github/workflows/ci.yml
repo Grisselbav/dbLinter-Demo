@@ -57,7 +57,7 @@ jobs:
 
     - name: Download and install SQLcl
       run: |
-        wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-25.2.0.184.2054.zip
+        wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-25.4.0.346.1855.zip
         unzip -q sqlcl.zip
         echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
 
@@ -232,10 +232,10 @@ jobs:
         retention-days: 90
 
     - name: Setup GitHub Pages
-      uses: actions/configure-pages@v4
+      uses: actions/configure-pages@v5
 
     - name: Upload to GitHub Pages
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v4
       with:
         path: results
 
