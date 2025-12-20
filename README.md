@@ -4,7 +4,7 @@
 
 This repository contains all non-compliant examples from [dbLinter](http://dblinter.app).
 
-The [CI workflow](.github/workflows/ci.yml) uses the [dbLinter CLI](https://grisselbav.github.io/dbLinter/reference/architecture/#cli) to check all SQL files in this repository and the database objects in the Oracle AI Database for compliance
+The [CI workflow](.github/workflows/ci.yml) uses the [dbLinter CLI](https://grisselbav.github.io/dbLinter/tools/cli/cli-overview/) to check all SQL files in this repository and the database objects in the Oracle AI Database for compliance
 with the dbLinter rules.
 
 The purpose of this repository is to demostrate the use of the dbLinter CLI in a CI/CD environment.
