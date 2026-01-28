@@ -58,7 +58,7 @@ The following test results are produced using a previously created input file:
 | Result | Producer | Notes |
 | ------ | -------- | ----- |
 | [Summary Test Report](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/21422710824#user-content-dblinter-test-report) | [Custom Script](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L218-L223) | The content of test.vscode.md in the summary page of a run. See also the standalone [HTML](https://grisselbav.github.io/dbLinter-Demo/test-report.html) file. |
-| [Test Results (EnricoMi)](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/21422710824/job/61685231765) | [EnricoMi/publish-unit-test-result-action](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L193-L200) | This action produces a own check (job) result. All details of a failure are accessible via a `Raw output` button. |
+| [Test Results (EnricoMi)](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/21422710824/job/61685386865) | [EnricoMi/publish-unit-test-result-action](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L193-L200) | This action produces a own check (job) result. All details of a failure are accessible via a `Raw output` button. |
 | [Test Results (dorny)](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/21422710824#summary-61685231765) | [dorny/test-reporter](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L202-L209) | This action adds a section in the Summary report of the workflow. |
 
 Here's a screenshot of the report produced by the [EnricoMi/publish-unit-test-result-action action](https://github.com/EnricoMi/publish-unit-test-result-action):
