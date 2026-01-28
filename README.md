@@ -35,8 +35,8 @@ The following check results are produced using a previously created input file:
 
 | Result | Producer | Notes |
 | ------ | -------- | ----- |
-| [Summary Check Report](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/20489848910#user-content-dblinter-check-report) | [Custom Script](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L211-L216) | The content of check.vscode.md in the summary page of a run. See also the standalone [HTML](https://grisselbav.github.io/dbLinter-Demo/check-report.html) file. |
-| [Annotations](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/20489848910#user-content-core-g-9219) | [Custom Script](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L116-L118) | The result when printing the content of check.github.txt to stdout. |
+| [Summary Check Report](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/21422710824#user-content-dblinter-check-report) | [Custom Script](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L211-L216) | The content of check.vscode.md in the summary page of a run. See also the standalone [HTML](https://grisselbav.github.io/dbLinter-Demo/check-report.html) file. |
+| [Annotations](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/21422710824#user-content-core-g-9219) | [Custom Script](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L116-L118) | The result when printing the content of check.github.txt to stdout. |
 | [Code Scanning Alerts](https://github.com/Grisselbav/dbLinter-Demo/security/code-scanning/719) | [github/codeql-action/upload-sarif](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L111-L114) | This action produces code scanning alerts. The alerts are part of the Security tab, which cannot be made visible to the public. See also [About code scanning alerts](https://docs.github.com/en/code-security/code-scanning/managing-code-scanning-alerts/about-code-scanning-alerts) |
 
 Here's a screenshot of a [code scanning alert](https://github.com/Grisselbav/dbLinter-Demo/security/code-scanning/719) shown in the non-public tab of this GitHub repository:
@@ -57,9 +57,9 @@ The following test results are produced using a previously created input file:
 
 | Result | Producer | Notes |
 | ------ | -------- | ----- |
-| [Summary Test Report](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/20489848910#user-content-dblinter-test-report) | [Custom Script](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L218-L223) | The content of test.vscode.md in the summary page of a run. See also the standalone [HTML](https://grisselbav.github.io/dbLinter-Demo/test-report.html) file. |
-| [Test Results (EnricoMi)](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/20489848910/job/58879921769) | [EnricoMi/publish-unit-test-result-action](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L193-L200) | This action produces a own check (job) result. All details of a failure are accessible via a `Raw output` button. |
-| [Test Results (dorny)](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/20489848910#summary-57561789364) | [dorny/test-reporter](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L202-L209) | This action adds a section in the Summary report of the workflow. |
+| [Summary Test Report](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/21422710824#user-content-dblinter-test-report) | [Custom Script](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L218-L223) | The content of test.vscode.md in the summary page of a run. See also the standalone [HTML](https://grisselbav.github.io/dbLinter-Demo/test-report.html) file. |
+| [Test Results (EnricoMi)](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/21422710824/job/61685231765) | [EnricoMi/publish-unit-test-result-action](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L193-L200) | This action produces a own check (job) result. All details of a failure are accessible via a `Raw output` button. |
+| [Test Results (dorny)](https://github.com/Grisselbav/dbLinter-Demo/actions/runs/21422710824#summary-61685231765) | [dorny/test-reporter](https://github.com/Grisselbav/dbLinter-Demo/blob/main/.github/workflows/ci.yml#L202-L209) | This action adds a section in the Summary report of the workflow. |
 
 Here's a screenshot of the report produced by the [EnricoMi/publish-unit-test-result-action action](https://github.com/EnricoMi/publish-unit-test-result-action):
 
