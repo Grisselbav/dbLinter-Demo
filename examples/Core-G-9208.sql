@@ -7,8 +7,8 @@ create assertion department_has_employees check (
        where exists (
                 select 1
                   from employees e
-                 where e.department_id = d.department_id
+                 where e.department_id = d.department_id                   
+                   and e.department_id is not null -- avoiding ORA-08673
              )
    )
-   initially deferred
-);
+) initially deferred;
