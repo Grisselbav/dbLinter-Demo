@@ -57,7 +57,7 @@ jobs:
 
     - name: Download and install SQLcl
       run: |
-        wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-25.4.2.044.1837.zip
+        wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-26.1.0.086.1709.zip
         unzip -q sqlcl.zip
         echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
 
@@ -79,7 +79,7 @@ jobs:
 
     - name: Download and install dbLinter CLI
       run: |
-        wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/v1.3.0/dblinter-1.3.0.zip
+        wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/v1.4.0/dblinter-1.4.0.zip
         unzip dblinter.zip
         mv dblinter-* dblinter
         echo "$(pwd)/dblinter" >> $GITHUB_PATH
