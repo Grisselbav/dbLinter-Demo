@@ -2,8 +2,9 @@
 
 select last_name
       ,first_name
-      ,department_name
   from employees
-  join departments
- using (department_id)
- where extract(month from hire_date) = extract(month from sysdate);
+ where employee_id in (
+          select employee_id
+            from jobs
+           where job_title like '%Manager%'
+       );
