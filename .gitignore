@@ -17,9 +17,10 @@ hs_err_pid*
 **/.sonar
 **/.scannerwork
 
-# Eclipse / Visual Studio Code
+# Eclipse / Visual Studio Code / Neural Inverse
 .project
 .vscode/*
+.ide/*
 !.vscode/settings.json
 .classpath
 .antlr
