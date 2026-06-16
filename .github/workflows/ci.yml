@@ -33,7 +33,7 @@ jobs:
 
     services:
       oracle:
-        image: gvenzl/oracle-free:23.26.1-slim-faststart
+        image: gvenzl/oracle-free:23.26.2-slim-faststart
         ports:
           - 1542:1521
         env:
@@ -47,17 +47,17 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'oracle'
 
     - name: Download and install SQLcl
       run: |
-        wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-26.1.0.086.1709.zip
+        wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-23.2.0.178.1027.zip
         unzip -q sqlcl.zip
         echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
 
@@ -79,7 +79,7 @@ jobs:
 
     - name: Download and install dbLinter CLI
       run: |
-        wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/v1.4.0/dblinter-1.4.0.zip
+        wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/v1.6.0/dblinter-1.6.0.zip
         unzip dblinter.zip
         mv dblinter-* dblinter
         echo "$(pwd)/dblinter" >> $GITHUB_PATH
@@ -103,7 +103,7 @@ jobs:
           --outputName=results/check
 
     - name: SonarQube Scan
-      uses: SonarSource/sonarqube-scan-action@v7.0.0
+      uses: SonarSource/sonarqube-scan-action@v8
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -206,7 +206,7 @@ jobs:
         fail_on: nothing
 
     - name: Publish Test Results (dorny)
-      uses: dorny/test-reporter@v2
+      uses: dorny/test-reporter@v3
       if: ${{ !cancelled() }}
       with:
         name: dbLinter Tests
@@ -229,7 +229,7 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
 
     - name: Upload Results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         name: results
@@ -238,12 +238,12 @@ jobs:
         retention-days: 90
 
     - name: Setup GitHub Pages
-      uses: actions/configure-pages@v5
+      uses: actions/configure-pages@v6
 
     - name: Upload to GitHub Pages
-      uses: actions/upload-pages-artifact@v4
+      uses: actions/upload-pages-artifact@v5
       with:
         path: results
 
     - name: Deploy to GitHub Pages
-      uses: actions/deploy-pages@v4
+      uses: actions/deploy-pages@v5
