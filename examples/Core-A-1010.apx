@@ -1,4 +1,4 @@
--- Core A-1010: Never allow application pages within an HTML frame.
+// Core A-1010: Never allow application pages within an HTML frame.
 
 app demo (
     security {
