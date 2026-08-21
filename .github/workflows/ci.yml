@@ -86,7 +86,7 @@ jobs:
       run: |
         echo "Running dbLinter checks..."
         dblinter \
-          --tenantName=${{ secrets.DBLINTER_TENANT_NAME }} \
+          --tenantName=Grisselbav \
           --userName=${{ secrets.DBLINTER_USER_NAME }} \
           --accessToken=${{ secrets.DBLINTER_ACCESS_TOKEN }} \
           --configName=dbLinter-Demo \
@@ -125,7 +125,7 @@ jobs:
       run: |
         echo "Running dbLinter tests..."
         dblinter \
-          --tenantName=${{ secrets.DBLINTER_TENANT_NAME }} \
+          --tenantName=Grisselbav \
           --userName=${{ secrets.DBLINTER_USER_NAME }} \
           --accessToken=${{ secrets.DBLINTER_ACCESS_TOKEN }} \
           --configName=dbLinter-Demo \
