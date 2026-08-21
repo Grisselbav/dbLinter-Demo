@@ -55,11 +55,13 @@ jobs:
         java-version: '21'
         distribution: 'oracle'
 
-    - name: Download and install SQLcl
+    - name: Enable Homebrew
       run: |
-        wget -O sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-23.2.0.178.1027.zip
-        unzip -q sqlcl.zip
-        echo "$(pwd)/sqlcl/bin" >> $GITHUB_PATH
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+        echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
+
+    - name: Install SQLcl
+      run: brew install --cask sqlcl
 
     - name: Run database installation script
       run: |
@@ -77,12 +79,8 @@ jobs:
           echo "install.log was not generated" > results/install.log
         fi
 
-    - name: Download and install dbLinter CLI
-      run: |
-        wget -O dblinter.zip https://github.com/Grisselbav/dbLinter/releases/download/v1.7.0/dblinter-1.7.0.zip
-        unzip dblinter.zip
-        mv dblinter-* dblinter
-        echo "$(pwd)/dblinter" >> $GITHUB_PATH
+    - name: Install dbLinter CLI
+      run: brew install grisselbav/dblinter/dblinter
 
     - name: Run checks
       run: |
