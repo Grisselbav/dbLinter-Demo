@@ -65,7 +65,7 @@ jobs:
 
     - name: Run database installation script
       run: |
-        sql sys/oracle@localhost:1542/FREEPDB1 as sysdba @install.sql
+        sqlcl sys/oracle@localhost:1542/FREEPDB1 as sysdba @install.sql
 
     - name: Prepare directory to be deployed to GitHub Pages
       if: always()
